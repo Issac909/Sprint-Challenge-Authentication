@@ -1,9 +1,13 @@
+const jwt = require('jsonwebtoken')
+const { jwtSecret } = require('./secrets')
+
 function generateToken(user) {
     const payload = {
       subject: user.id,
       username: user.username,
-      role: user.role || "user",
     };
+
+    const secret = 'keept it secret, keep it safe'
   
     const options = {
       expiresIn: "1h",
