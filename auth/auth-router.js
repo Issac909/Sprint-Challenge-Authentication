@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const generateToken = require('../config/tokens');
 
 
-const User = require('../users/user-model');
+const User = require('./auth-model');
 
 router.post('/register', (req, res) => {
   let user = req.body;
@@ -36,3 +36,5 @@ router.post('/login', (req, res) => {
     })
     .catch(err => res.status(401).json({ message: 'invalid credentials' }));
 });
+
+module.exports = router;
