@@ -18,7 +18,7 @@ server.use('/api/auth', authRouter);
 server.use('/api/jokes', authenticate, jokesRouter);
 
 server.get('/', (req, res) => {
-    res.send(<h2>Spring Challenge Authorization API</h2>)
+    res.send('Spring Challenge Authorization API')
 });
 
 server.use((err, req, res, next) => {

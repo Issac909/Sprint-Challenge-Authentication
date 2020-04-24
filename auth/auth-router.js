@@ -4,6 +4,9 @@ const generateToken = require('../config/tokens');
 
 const User = require('./auth-model');
 
+const verifyToken = require('./')
+const authenticate = require('./autheniticate-middleware')
+
 router.post('/register', (req, res) => {
   let user = req.body;
   const hash = bcrypt.hashSync(user.password, 10);
@@ -38,5 +41,17 @@ router.post('/login', async (req, res, next) => {
     next(err);
   }
 });
+
+router.get('/', async (req, res, next) => {
+  const { username } = res.body.username;
+
+  User.find()
+  then((res) => {
+    res.status(200).json({ username })
+  })
+  .catch(err => {
+    res.status(404).json({ errMessage: err.message });
+  })
+})
 
 module.exports = router;
