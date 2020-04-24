@@ -41,7 +41,23 @@ router.post("/login", (req, res, next) => {
     });
 });
 
-router.get('/', authenticate, async (req, res, next) => {
+router.get("/logout", (req, res) => {
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        res.json({ message: "welp, it seems like you might be stuck here." });
+      } else {
+        res.sendStatus(200).end({ message: "bye!" });
+      }
+    });
+  } else {
+    res
+      .status(200)
+      .json({ message: "were you sitting outside this whole time?" });
+  }
+});
+
+router.get('/',  async (req, res, next) => {
   const { username } = res.body.username;
 
   await User.find()
