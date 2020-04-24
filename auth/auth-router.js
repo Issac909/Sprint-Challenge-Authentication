@@ -4,8 +4,7 @@ const generateToken = require('../config/tokens');
 
 const User = require('./auth-model');
 
-const verifyToken = require('./')
-const authenticate = require('./autheniticate-middleware')
+const authenticate = require('./authenticate-middleware');
 
 router.post('/register', (req, res) => {
   let user = req.body;
@@ -21,31 +20,31 @@ router.post('/register', (req, res) => {
     );
 });
 
-router.post('/login', async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findBy({ username }).first();
-    const passwordValid = await bcrypt.compareSync(password, user.password);
+router.post("/login", (req, res, next) => {
+  let { username, password } = req.body;
 
-    if (user && passwordValid) {
-      const token = generateToken(user);
-      res.status(200).json({
-        message: `Welcome ${user.username}!`,
-        token: token,
-        user_id: user.id
-      });
-    } else {
-      res.status(401).json({ message: "Invalid Credentials" });
-    }
-  } catch (err) {
-    next(err);
-  }
+  User.findBy({ username })
+    .first()
+    .then(user => {
+      if (user && bcrypt.compareSync(password, user.password)) {
+        const token = generateToken(user);
+        res.status(200).json({
+          message: `Welcome ${user.username}!`,
+          token,
+        });
+      } else {
+        res.status(401).json({ message: "Invalid Credentials" });
+      }
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', authenticate, async (req, res, next) => {
   const { username } = res.body.username;
 
-  User.find()
+  await User.find()
   then((res) => {
     res.status(200).json({ username })
   })
